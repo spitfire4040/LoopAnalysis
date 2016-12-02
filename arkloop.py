@@ -64,20 +64,21 @@ def parse():
 
 	# iterate through each team
 	for x in range(1, 4):
-		print("Team-" + str(x))
 
-		for y in range(4770, 4844):
-			print("Cycle-" + str(y))
+		# cycle through each file for team/day
+		for node in nodelist:
 
-			# cycle through each file for team/day
-			for item in nodelist:
-				print("Node-" + item)
+			for y in range(4770, 4844):
 
 				# remove carriage return
-				item = item.strip('\n')
+				node = node.strip('\n')
 
 				# retrieve file			
-				filename = "https://topo-data.caida.org/team-probing/list-7.allpref24/team-" + str(x) + "/daily/" + year + "/cycle-" + year + month + day + "/daily.l7.t1.c" + str(y) + "." + year + month + day + "." + item + ".warts.gz"
+				filename = "https://topo-data.caida.org/team-probing/list-7.allpref24/team-" + str(x) + "/daily/" + year + "/cycle-" + year + month + day + "/daily.l7.t1.c00" + str(y) + "." + year + month + day + "." + node + ".warts.gz"
+
+				# print filename for test
+				print(" ")
+				print("Team-" + str(x) + "   " + "Node: " + node + "   " + "Count: " + str(count))
 
 				# fetch file with requests
 				r = requests.get(filename, auth=("jthom@cse.unr.edu", "sherdnig3544"))
@@ -135,6 +136,7 @@ def parse():
 								# append string to running lists
 								unique_trace.add(trace)
 								all_trace.append(trace)
+								count += 1
 
 							# reset trace
 							trace = []
@@ -167,10 +169,11 @@ def parse():
 				#except:
 					#print ("url does not exist")
 
-				# write unique_trace to file
-				for item in unique_trace:
-					out1.write(item)
-					out1.write('\n')
+	# write unique_trace to file
+	for item in unique_trace:
+		out1.write(item)
+		out1.write('\n')
+
 
 	# write stats
 	out2.write("Unique Trace: " + str(len(unique_trace)) + '\n')
@@ -180,6 +183,7 @@ def parse():
 	# close files
 	out1.close()
 	out2.close()
+	unique_trace.clear()
 
 def main(argv):
 	# run parse
